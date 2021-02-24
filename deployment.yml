@@ -5,6 +5,7 @@ metadata:
 data:
   bootstrap_servers: "pkc-ep9mm.us-east-2.aws.confluent.cloud:9092"
   group_id: "alpaca-data-relay"
+  apca_api_base_url: "https://paper-api.alpaca.markets/v2"
 
 ---
 apiVersion: apps/v1
@@ -45,3 +46,18 @@ spec:
             configMapKeyRef:
               name: alpaca-data-relay
               key: group_id
+        - name: APCA_API_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: alpaca-data-relay
+              key: apca_api_base_url
+        - name: APCA_API_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: alpaca
+              key: APCA_API_KEY_ID
+        - name: APCA_API_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: alpaca
+              key: APCA_API_SECRET_KEY

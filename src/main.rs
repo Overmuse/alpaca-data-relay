@@ -7,7 +7,7 @@ use std::env;
 #[tokio::main]
 async fn main() -> Result<()> {
     let _guard = sentry::init(sentry::ClientOptions::new());
-    dotenv()?;
+    let _ = dotenv();
     env_logger::builder().format_timestamp_micros().init();
 
     let mut events: Vec<String> = vec![];
