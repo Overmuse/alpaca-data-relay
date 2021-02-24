@@ -28,4 +28,5 @@ FROM debian:buster-slim as runtime
 WORKDIR alpaca-data-relay
 COPY --from=builder /alpaca-data-relay/target/release/alpaca-data-relay /usr/local/bin
 ENV RUST_LOG=alpaca-data-relay=debug
+RUN apt-get update && apt-get -y install ca-certificates libssl-dev && rm -rf /var/lib/apt/lists/*
 ENTRYPOINT ["/usr/local/bin/alpaca-data-relay"]
