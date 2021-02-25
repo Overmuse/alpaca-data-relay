@@ -46,6 +46,10 @@ spec:
             configMapKeyRef:
               name: alpaca-data-relay
               key: group_id
+        - name: SECURITY_PROTOCOL
+          value: "SASL_SSL"
+        - name: SASL_MECHANISMS
+          value: "PLAIN"
         - name: APCA_API_STREAMING_URL
           valueFrom:
             configMapKeyRef:
@@ -61,3 +65,9 @@ spec:
             secretKeyRef:
               name: alpaca
               key: APCA_API_SECRET_KEY
+        - name: RUST_LOG
+          value: "debug"
+        - name: ACCOUNT_UPDATES
+          value: "true"
+        - name: TRADE_UPDATES
+          value: "true"
