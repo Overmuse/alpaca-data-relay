@@ -1,7 +1,7 @@
 use alpaca::{AlpacaMessage, Connection, WebSocket};
 use anyhow::{Context, Result};
 use futures::StreamExt;
-use log::{debug, error};
+use log::{debug, error, info};
 use rdkafka::{
     producer::{FutureProducer, FutureRecord},
     ClientConfig,
@@ -35,29 +35,30 @@ pub async fn run() -> Result<()> {
     ws.for_each(|message| async {
         match message {
             Ok(message) => {
-                debug!("{:?}", &message);
                 let topic = get_topic(&message);
                 let key = get_key(&message);
                 let payload = serde_json::to_string(&message);
                 match payload {
                     Ok(payload) => {
-                        let send = producer
+                        debug!(
+                            "Message received: {}. Assigning key: {}, sending to topic: {}.",
+                            &payload, &key, &topic
+                        );
+                        producer
                             .send(
                                 FutureRecord::to(topic).key(key).payload(&payload),
                                 Duration::from_secs(0),
                             )
                             .await;
-                        if let Err((e, _msg)) = send {
-                            error!("Error sending message to Kafka: {}", e)
-                        }
                     }
-                    Err(e) => error!("Error parsing message: {}", e),
+                    Err(e) => error!("Failed to serialize payload: {:?}. Error: {}", &message, e),
                 }
             }
-            Err(e) => error!("Error receiving message: {}", e),
+            Err(e) => error!("Failed to receive message from the WebSocket: {}", e),
         }
     })
     .await;
+    info!("WebSocket closed, finalizing");
     Ok(())
 }
 
@@ -69,7 +70,6 @@ fn kafka_producer() -> Result<FutureProducer> {
         .set("sasl.username", &env::var("SASL_USERNAME")?)
         .set("sasl.password", &env::var("SASL_PASSWORD")?)
         .set("enable.ssl.certificate.verification", "false")
-        .set("message.timeout.ms", "5000")
         .create()
         .context("Failed to create Kafka producer")
 }
