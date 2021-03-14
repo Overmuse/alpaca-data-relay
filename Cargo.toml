@@ -12,7 +12,7 @@ anyhow = "1.0"
 dotenv = "0.15"
 env_logger = "0.7.1"
 log = "0.4"
-rdkafka = { version = "0.23", features = ["ssl-vendored"] }
+rdkafka = { version = "0.25", features = ["ssl-vendored"] }
 futures = "0.3"
 sentry = "0.19.0"
 sentry-anyhow = "0.19.0"
