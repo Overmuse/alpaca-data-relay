@@ -32,7 +32,7 @@ async fn setup_websocket() -> Result<WebSocket> {
 pub async fn run() -> Result<()> {
     let ws = setup_websocket().await?;
     let producer = kafka_producer()?;
-    ws.for_each(|message| async {
+    ws.for_each_concurrent(None, |message| async {
         match message {
             Ok(message) => {
                 let topic = get_topic(&message);
