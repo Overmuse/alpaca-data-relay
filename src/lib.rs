@@ -44,12 +44,15 @@ pub async fn run() -> Result<()> {
                             "Message received: {}. Assigning key: {}, sending to topic: {}.",
                             &payload, &key, &topic
                         );
-                        producer
+                        let send = producer
                             .send(
                                 FutureRecord::to(topic).key(key).payload(&payload),
                                 Duration::from_secs(0),
                             )
                             .await;
+                        if let Err((e, msg)) = send {
+                            error!("Failed to send msg to Kafka: {:?}. Error: {}", msg, e)
+                        }
                     }
                     Err(e) => error!("Failed to serialize payload: {:?}. Error: {}", &message, e),
                 }
