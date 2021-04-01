@@ -28,8 +28,8 @@ dependencies = [
 
 [[package]]
 name = "alpaca"
-version = "0.3.0"
-source = "git+ssh://git@github.com/Overmuse/alpaca?branch=main#e59378917cfd51efb996845f48a8db739b160ea9"
+version = "0.5.0"
+source = "git+ssh://git@github.com/Overmuse/alpaca?tag=v0.5.0#e3ad373aebf78dfbb059b211e61c1dea1312448b"
 dependencies = [
  "chrono",
  "futures",
