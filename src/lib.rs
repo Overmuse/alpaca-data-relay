@@ -1,13 +1,14 @@
 use alpaca::{AlpacaMessage, Connection, WebSocket};
 use anyhow::{Context, Result};
 use futures::StreamExt;
-use log::{debug, error, info};
-use rdkafka::{
-    producer::{FutureProducer, FutureRecord},
-    ClientConfig,
-};
+use kafka_settings::producer;
+use rdkafka::producer::FutureRecord;
 use std::env;
 use std::time::Duration;
+use tracing::{debug, error, info};
+
+mod settings;
+pub use settings::Settings;
 
 async fn setup_websocket() -> Result<WebSocket> {
     let mut events: Vec<String> = vec![];
@@ -29,9 +30,9 @@ async fn setup_websocket() -> Result<WebSocket> {
     .map_err(|e| e.into())
 }
 
-pub async fn run() -> Result<()> {
+pub async fn run(settings: Settings) -> Result<()> {
     let ws = setup_websocket().await?;
-    let producer = kafka_producer()?;
+    let producer = producer(&settings.kafka)?;
     ws.for_each_concurrent(None, |message| async {
         match message {
             Ok(message) => {
@@ -63,18 +64,6 @@ pub async fn run() -> Result<()> {
     .await;
     info!("WebSocket closed, finalizing");
     Ok(())
-}
-
-fn kafka_producer() -> Result<FutureProducer> {
-    ClientConfig::new()
-        .set("bootstrap.servers", &env::var("BOOTSTRAP_SERVERS")?)
-        .set("security.protocol", &env::var("SECURITY_PROTOCOL")?)
-        .set("sasl.mechanisms", &env::var("SASL_MECHANISMS")?)
-        .set("sasl.username", &env::var("SASL_USERNAME")?)
-        .set("sasl.password", &env::var("SASL_PASSWORD")?)
-        .set("enable.ssl.certificate.verification", "false")
-        .create()
-        .context("Failed to create Kafka producer")
 }
 
 fn get_topic(s: &AlpacaMessage) -> &str {
