@@ -1,17 +1,17 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: alpaca-data-relay
+  name: alpaca-data-relay-cm
 data:
-  KAFKA__BOOTSTRAP_SERVERS: "pkc-ep9mm.us-east-2.aws.confluent.cloud:9092"
-  KAFKA__GROUP_ID: "alpaca-data-relay"
-  KAFKA__SECURITY_PROTOCOL: "SASL_SSL"
-  ALPACA__STREAMING_URL: "wss://paper-api.alpaca.markets/stream"
+  KAFKA__BOOTSTRAP_SERVERS: pkc-ep9mm.us-east-2.aws.confluent.cloud:9092
+  KAFKA__GROUP_ID: alpaca-data-relay
+  KAFKA__SECURITY_PROTOCOL: SASL_SSL
+  ALPACA__STREAMING_URL: wss://paper-api.alpaca.markets/stream
+  ALPACA__ACCOUNT_UPDATES: "true"
+  ALPACA__TRADE_UPDATES: "true"
+  RUST_LOG: debug
+
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: kafka-consumer-config-map
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -29,30 +29,12 @@ spec:
       containers:
       - name: alpaca-data-relay
         image: 799439856592.dkr.ecr.us-east-1.amazonaws.com/alpaca-data-relay:${IMAGE_TAG}
-        env:
-        - name: KAFKA__SASL_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: kafka
-              key: SASL_USERNAME
-        - name: KAFKA__SASL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: kafka
-              key: SASL_PASSWORD
-        - name: ALPACA__KEY_ID
-          valueFrom:
-            secretKeyRef:
-              name: alpaca
-              key: APCA_API_KEY_ID
-        - name: ALPACA__SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              name: alpaca
-              key: APCA_API_SECRET_KEY
-        - name: RUST_LOG
-          value: "debug"
-        - name: ALPACA__ACCOUNT_UPDATES
-          value: true
-        - name: ALPACA__TRADE_UPDATES
-          value: true
+        envFrom:
+        - configMapRef:
+            name: alpaca-data-relay-cm
+        - configMapRef:
+            name: kafka-config-map
+        - secretRef:
+            name: kafka
+        - secretRef:
+            name: alpaca
