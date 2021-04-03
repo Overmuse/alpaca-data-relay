@@ -1,28 +1,27 @@
 use alpaca::{AlpacaMessage, Connection, WebSocket};
-use anyhow::{Context, Result};
+use anyhow::Result;
 use futures::StreamExt;
 use kafka_settings::producer;
 use rdkafka::producer::FutureRecord;
-use std::env;
 use std::time::Duration;
 use tracing::{debug, error, info};
 
 mod settings;
-pub use settings::Settings;
+pub use settings::{AlpacaSettings, Settings};
 
-async fn setup_websocket() -> Result<WebSocket> {
+async fn setup_websocket(settings: AlpacaSettings) -> Result<WebSocket> {
     let mut events: Vec<String> = vec![];
-    if env::var("TRADE_UPDATES").is_ok() {
+    if settings.trade_updates {
         events.push("trade_updates".into());
     }
-    if env::var("ACCOUNT_UPDATES").is_ok() {
+    if settings.account_updates {
         events.push("account_updates".into());
     }
 
     Connection::new(
-        env::var("APCA_API_STREAMING_URL").context("Could not find APCA_API_STREAMING_URL")?,
-        env::var("APCA_API_KEY_ID").context("Could not find APCA_API_KEY_ID")?,
-        env::var("APCA_API_SECRET_KEY").context("Could not find APCA_API_SECRET_KEY")?,
+        settings.streaming_url,
+        settings.key_id,
+        settings.secret_key,
         events,
     )
     .connect()
@@ -31,7 +30,7 @@ async fn setup_websocket() -> Result<WebSocket> {
 }
 
 pub async fn run(settings: Settings) -> Result<()> {
-    let ws = setup_websocket().await?;
+    let ws = setup_websocket(settings.alpaca).await?;
     let producer = producer(&settings.kafka)?;
     ws.for_each_concurrent(None, |message| async {
         match message {
