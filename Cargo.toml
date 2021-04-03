@@ -1,6 +1,6 @@
 [package]
 name = "alpaca-data-relay"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Sebastian Rollen <rollenseb@gmail.com>"]
 edition = "2018"
 
@@ -9,9 +9,10 @@ edition = "2018"
 [dependencies]
 alpaca = { tag = "v0.5.1", git = "ssh://git@github.com/Overmuse/alpaca" }
 anyhow = "1.0"
+config = "0.11.0"
 dotenv = "0.15"
 futures = "0.3"
-kafka-settings = { git = "ssh://git@github.com/Overmuse/kafka-settings", tag = "v0.1.0" }
+kafka-settings = { git = "ssh://git@github.com/Overmuse/kafka-settings", tag = "v0.2.0" }
 rdkafka = { version = "0.26", features = ["ssl-vendored"] }
 sentry = "0.19.0"
 serde = "1.0"
@@ -20,4 +21,3 @@ tokio = {version = "1.0", features = ["macros", "rt-multi-thread"]}
 tracing = "0.1.25"
 tracing-subscriber = "0.2.17"
 tracing-log = "0.1.2"
-config = "0.11.0"

@@ -3,11 +3,15 @@ kind: ConfigMap
 metadata:
   name: alpaca-data-relay
 data:
-  bootstrap_servers: "pkc-ep9mm.us-east-2.aws.confluent.cloud:9092"
-  group_id: "alpaca-data-relay"
-  apca_api_streaming_url: "wss://paper-api.alpaca.markets/stream"
-
+  KAFKA__BOOTSTRAP_SERVERS: "pkc-ep9mm.us-east-2.aws.confluent.cloud:9092"
+  KAFKA__GROUP_ID: "alpaca-data-relay"
+  KAFKA__SECURITY_PROTOCOL: "SASL_SSL"
+  ALPACA__STREAMING_URL: "wss://paper-api.alpaca.markets/stream"
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-consumer-config-map
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,48 +30,29 @@ spec:
       - name: alpaca-data-relay
         image: 799439856592.dkr.ecr.us-east-1.amazonaws.com/alpaca-data-relay:${IMAGE_TAG}
         env:
-        - name: SASL_USERNAME
+        - name: KAFKA__SASL_USERNAME
           valueFrom:
             secretKeyRef:
               name: kafka
               key: SASL_USERNAME
-        - name: SASL_PASSWORD
+        - name: KAFKA__SASL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: kafka
               key: SASL_PASSWORD
-        - name: BOOTSTRAP_SERVERS
-          valueFrom:
-            configMapKeyRef:
-              name: alpaca-data-relay
-              key: bootstrap_servers
-        - name: GROUP_ID
-          valueFrom:
-            configMapKeyRef:
-              name: alpaca-data-relay
-              key: group_id
-        - name: SECURITY_PROTOCOL
-          value: "SASL_SSL"
-        - name: SASL_MECHANISMS
-          value: "PLAIN"
-        - name: APCA_API_STREAMING_URL
-          valueFrom:
-            configMapKeyRef:
-              name: alpaca-data-relay
-              key: apca_api_streaming_url
-        - name: APCA_API_KEY_ID
+        - name: ALPACA__KEY_ID
           valueFrom:
             secretKeyRef:
               name: alpaca
               key: APCA_API_KEY_ID
-        - name: APCA_API_SECRET_KEY
+        - name: ALPACA__SECRET_KEY
           valueFrom:
             secretKeyRef:
               name: alpaca
               key: APCA_API_SECRET_KEY
         - name: RUST_LOG
           value: "debug"
-        - name: ACCOUNT_UPDATES
-          value: "true"
-        - name: TRADE_UPDATES
-          value: "true"
+        - name: ALPACA__ACCOUNT_UPDATES
+          value: true
+        - name: ALPACA__TRADE_UPDATES
+          value: true

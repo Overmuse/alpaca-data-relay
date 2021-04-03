@@ -45,7 +45,7 @@ dependencies = [
 
 [[package]]
 name = "alpaca-data-relay"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "alpaca",
  "anyhow",
@@ -731,8 +731,8 @@ dependencies = [
 
 [[package]]
 name = "kafka-settings"
-version = "0.1.0"
-source = "git+ssh://git@github.com/Overmuse/kafka-settings?tag=v0.1.0#670c27de25cc64e15402af26bb79b7a1cb335ba1"
+version = "0.2.0"
+source = "git+ssh://git@github.com/Overmuse/kafka-settings?tag=v0.2.0#5f3fd2812e2f4c7ad69dd927f3ec06e0ce343f56"
 dependencies = [
  "rdkafka",
  "serde 1.0.125",
