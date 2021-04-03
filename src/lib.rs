@@ -1,9 +1,8 @@
 use alpaca::{AlpacaMessage, Connection, WebSocket};
-use anyhow::{Context, Result};
+use anyhow::Result;
 use futures::StreamExt;
 use kafka_settings::producer;
 use rdkafka::producer::FutureRecord;
-use std::env;
 use std::time::Duration;
 use tracing::{debug, error, info};
 
