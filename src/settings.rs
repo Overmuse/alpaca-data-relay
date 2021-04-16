@@ -12,9 +12,15 @@ pub struct AlpacaSettings {
 }
 
 #[derive(Debug, Deserialize)]
+pub struct SentrySettings {
+    pub address: String,
+}
+
+#[derive(Debug, Deserialize)]
 pub struct Settings {
     pub alpaca: AlpacaSettings,
     pub kafka: KafkaSettings,
+    pub sentry: SentrySettings,
 }
 
 impl Settings {
