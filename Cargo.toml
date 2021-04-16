@@ -1,6 +1,6 @@
 [package]
 name = "alpaca-data-relay"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["Sebastian Rollen <rollenseb@gmail.com>"]
 edition = "2018"
 
@@ -14,7 +14,8 @@ dotenv = "0.15"
 futures = "0.3"
 kafka-settings = { git = "ssh://git@github.com/Overmuse/kafka-settings", tag = "v0.2.1" }
 rdkafka = { version = "0.26", features = ["ssl-vendored"] }
-sentry = "0.19.0"
+sentry = "0.21.0"
+sentry-anyhow = "0.21.0"
 serde = "1.0"
 serde_json = "1.0"
 tokio = {version = "1.0", features = ["macros", "rt-multi-thread"]}
