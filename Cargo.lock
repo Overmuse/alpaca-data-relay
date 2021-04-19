@@ -28,18 +28,19 @@ dependencies = [
 
 [[package]]
 name = "alpaca"
-version = "0.6.0"
-source = "git+ssh://git@github.com/Overmuse/alpaca?tag=v0.6.0#9337b72b752c0b7fdce574e5b89989ec5f6695e4"
+version = "0.7.0"
+source = "git+ssh://git@github.com/Overmuse/alpaca?tag=v0.7.0#1dd0bfd3faf13f1c402565ccf8c5602176997d7d"
 dependencies = [
  "chrono",
  "futures",
- "log",
  "reqwest 0.11.3",
+ "rust_decimal",
  "serde 1.0.125",
  "serde_json",
  "thiserror",
  "tokio 1.5.0",
  "tokio-tungstenite",
+ "tracing",
  "uuid",
 ]
 
@@ -1391,6 +1392,17 @@ name = "rust-ini"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3e52c148ef37f8c375d49d5a73aa70713125b7f19095948a923f80afdeb22ec2"
+
+[[package]]
+name = "rust_decimal"
+version = "1.11.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4ca515aafa02c92f4d3c69b2f4c408f839b51b1aa938d00b15e8c0966bd22d73"
+dependencies = [
+ "arrayvec",
+ "num-traits 0.2.14",
+ "serde 1.0.125",
+]
 
 [[package]]
 name = "rustc-demangle"
