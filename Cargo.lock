@@ -28,8 +28,8 @@ dependencies = [
 
 [[package]]
 name = "alpaca"
-version = "0.5.1"
-source = "git+ssh://git@github.com/Overmuse/alpaca?tag=v0.5.1#f85f09d98ab5897837b8c80f20ece9cb3eaa4164"
+version = "0.6.0"
+source = "git+ssh://git@github.com/Overmuse/alpaca?tag=v0.6.0#9337b72b752c0b7fdce574e5b89989ec5f6695e4"
 dependencies = [
  "chrono",
  "futures",
@@ -45,7 +45,7 @@ dependencies = [
 
 [[package]]
 name = "alpaca-data-relay"
-version = "1.0.1"
+version = "1.1.0"
 dependencies = [
  "alpaca",
  "anyhow",
