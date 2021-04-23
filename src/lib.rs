@@ -3,6 +3,7 @@ use anyhow::Result;
 use futures::StreamExt;
 use kafka_settings::producer;
 use rdkafka::producer::FutureRecord;
+use sentry_anyhow::capture_anyhow;
 use std::time::Duration;
 use tracing::{debug, error, info};
 
@@ -51,13 +52,23 @@ pub async fn run(settings: Settings) -> Result<()> {
                             )
                             .await;
                         if let Err((e, msg)) = send {
+                            let e = e.into();
+                            capture_anyhow(&e);
                             error!("Failed to send msg to Kafka: {:?}. Error: {}", msg, e)
                         }
                     }
-                    Err(e) => error!("Failed to serialize payload: {:?}. Error: {}", &message, e),
+                    Err(e) => {
+                        let e = e.into();
+                        capture_anyhow(&e);
+                        error!("Failed to serialize payload: {:?}. Error: {}", &message, e)
+                    }
                 }
             }
-            Err(e) => error!("Failed to receive message from the WebSocket: {}", e),
+            Err(e) => {
+                let e = e.into();
+                capture_anyhow(&e);
+                error!("Failed to receive message from the WebSocket: {}", e)
+            }
         }
     })
     .await;
