@@ -33,7 +33,7 @@ async fn setup_websocket(settings: AlpacaSettings) -> Result<WebSocket> {
 pub async fn run(settings: Settings) -> Result<()> {
     let ws = setup_websocket(settings.alpaca).await?;
     let producer = producer(&settings.kafka)?;
-    ws.for_each_concurrent(None, |message| async {
+    ws.for_each(|message| async {
         match message {
             Ok(message) => {
                 let topic = get_topic(&message);
